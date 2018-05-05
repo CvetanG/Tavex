@@ -1,0 +1,8 @@
+/home/cvetan/git/My_Mnvr/HTMLParser/pom.xml
+
+D:\workspace\My_Mnrv\HTMLParser\pom.xml
+
+mvn clean package
+
+java -cp target/HTMLParser-0.0.1-SNAPSHOT-jar-with-dependencies.jar app.RunMe
+

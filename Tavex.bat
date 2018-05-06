@@ -1,4 +1,4 @@
-set root=D:\workspace\My_Mnrv\HTMLParser
+set root=c:\Users\cgg\git\\HTMLParser
 
 chcp UTF-8
 

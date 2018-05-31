@@ -1,6 +1,6 @@
 #!/bin/bash
 
-root=/home/cvetan/git/My_Mnvr/HTMLParser
+root=/home/cvetan/git/Tavex
 
 cd ${root}
 

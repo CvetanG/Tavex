@@ -20,6 +20,7 @@ import app.controllers.ExcelController;
 import app.controllers.WebSitesParser;
 import app.entities.RowEntry;
 import app.entities.Utils;
+import app.histdata.Myfxbook;
 
 public class RunMe {
 
@@ -32,12 +33,12 @@ public class RunMe {
 //		String path = "/home/cvetan/Downloads/Tavex.xlsx";
 		
 		List<String> myCoinsStrings = new ArrayList<>();
-		myCoinsStrings.add("1 унция златен американски бизон");
-		myCoinsStrings.add("1 унция американски орел");
-		myCoinsStrings.add("30 грама златна китайска панда от 2017");
-		myCoinsStrings.add("1 унция златна австрийска филхармония");
-		myCoinsStrings.add("1 унция златнo Австралийско Кенгуру");
-		myCoinsStrings.add("1 унция златен канадски кленов лист");
+		myCoinsStrings.add("1 СѓРЅС†РёСЏ Р·Р»Р°С‚РµРЅ Р°РјРµСЂРёРєР°РЅСЃРєРё Р±РёР·РѕРЅ");
+		myCoinsStrings.add("1 СѓРЅС†РёСЏ Р°РјРµСЂРёРєР°РЅСЃРєРё РѕСЂРµР»");
+		myCoinsStrings.add("30 РіСЂР°РјР° Р·Р»Р°С‚РЅР° РєРёС‚Р°Р№СЃРєР° РїР°РЅРґР° РѕС‚ 2017");
+		myCoinsStrings.add("1 СѓРЅС†РёСЏ Р·Р»Р°С‚РЅР° Р°РІСЃС‚СЂРёР№СЃРєР° С„РёР»С…Р°СЂРјРѕРЅРёСЏ");
+		myCoinsStrings.add("1 СѓРЅС†РёСЏ Р·Р»Р°С‚РЅo РђРІСЃС‚СЂР°Р»РёР№СЃРєРѕ РљРµРЅРіСѓСЂСѓ");
+		myCoinsStrings.add("1 СѓРЅС†РёСЏ Р·Р»Р°С‚РµРЅ РєР°РЅР°РґСЃРєРё РєР»РµРЅРѕРІ Р»РёСЃС‚");
 		
 //		int zeroRow = 0;
 		
@@ -121,6 +122,11 @@ public class RunMe {
 		
 		
 		myDropbox.uploadFile(client, localFile, dropboxPath);
+		
+		Myfxbook fx20 = new Myfxbook(20);
+		fx20.init();
+		Myfxbook fx50 = new Myfxbook(50);
+		fx50.init();
         
         long endTime   = System.currentTimeMillis();
 		System.err.println(Utils.duration(startTime, endTime));

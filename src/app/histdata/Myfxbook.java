@@ -151,6 +151,10 @@ public class Myfxbook {
 	private void calculateMinMax() {
 		PriorityQueue<Double> pqMin = new PriorityQueue<>(this.finalList.size());
 		PriorityQueue<Double> pqMax = new PriorityQueue<>(this.finalList.size(), Collections.reverseOrder());
+		
+		// adding ang current data price because "getLastData()" get data from the previous day
+		pqMin.add(this.curPrice);
+		pqMax.add(this.curPrice);
 
 		for (OHLC element : this.finalList) {
 			pqMin.add(element.getLow());
@@ -194,6 +198,12 @@ public class Myfxbook {
 
 	public void setFinalList(List<OHLC> finalList) {
 		this.finalList = finalList;
+	}
+	
+	// Test
+	public static void main(String[] args) {
+		Myfxbook fx55 = new Myfxbook(55);
+		fx55.init();
 	}
 
 }

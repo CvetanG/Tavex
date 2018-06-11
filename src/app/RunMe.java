@@ -125,8 +125,8 @@ public class RunMe {
 		
 		Myfxbook fx20 = new Myfxbook(20);
 		fx20.init();
-		Myfxbook fx50 = new Myfxbook(50);
-		fx50.init();
+		Myfxbook fx55 = new Myfxbook(55);
+		fx55.init();
         
         long endTime   = System.currentTimeMillis();
 		System.err.println(Utils.duration(startTime, endTime));

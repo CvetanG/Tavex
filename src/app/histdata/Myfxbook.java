@@ -58,7 +58,7 @@ public class Myfxbook {
 		JsonParser parser = new JsonParser();
 		StringBuilder sb = new StringBuilder();
 		
-		// check for 
+		// check for file last updated
 		int minute = 30;
 		int periodMinutes = minute * 60 * 5;
 		long OneMinuteMillis = (periodMinutes * 1000)  * 60;
@@ -85,7 +85,8 @@ public class Myfxbook {
 						.get();
 				
 				Element table = doc.getElementById("symbolMarket");
-				data = tableToJSON(table);
+				String curPrice = doc.getElementById("symbolHistoryBid").text();
+				data = tableToJSON(table, curPrice);
 				System.out.println();
 				FileWriter  fw = new FileWriter(file, false);
 
@@ -99,7 +100,7 @@ public class Myfxbook {
 		for (int i = 0; i < histPeriod; i++) {
 			this.finalList.add(jsonElementToOHLC(gson, data.get(i)));
 		}
-		this.curPrice =  this.finalList.get(0).getClose();
+		this.curPrice =  jsonElementToOHLC(gson, data.get(100)).getClose();
 
 	}
 
@@ -109,10 +110,19 @@ public class Myfxbook {
 		List<String> yourList = gson.fromJson(jsonElement, new TypeToken<List<String>>(){}.getType());
 
 		result.setDate(yourList.get(0));
+		
+		// Convert to BGNUSD
 		result.setOpen(EUR_BGN / Double.parseDouble(yourList.get(1)));
 		result.setHigh(EUR_BGN / Double.parseDouble(yourList.get(2)));
 		result.setLow(EUR_BGN / Double.parseDouble(yourList.get(3)));
 		result.setClose(EUR_BGN / Double.parseDouble(yourList.get(4)));
+		
+		// Keep EURUSD
+//		result.setOpen(Double.parseDouble(yourList.get(1)));
+//		result.setHigh(Double.parseDouble(yourList.get(2)));
+//		result.setLow(Double.parseDouble(yourList.get(3)));
+//		result.setClose(Double.parseDouble(yourList.get(4)));
+		
 		result.setChangePip(yourList.get(5));
 		result.setChangeProcent(yourList.get(6));
 		return result;
@@ -127,7 +137,7 @@ public class Myfxbook {
 		double TR3;
 		List<Double> listTRMax = new ArrayList<>();
 		PriorityQueue<Double> pq;
-
+		
 		for (int i = 1; i < this.finalList.size(); i++) {
 			TR1 = Math.abs(this.finalList.get(i).getHigh() - this.finalList.get(i).getLow());
 			TR2 = Math.abs(this.finalList.get(i - 1).getClose() - this.finalList.get(i).getHigh());
@@ -152,10 +162,9 @@ public class Myfxbook {
 		PriorityQueue<Double> pqMin = new PriorityQueue<>(this.finalList.size());
 		PriorityQueue<Double> pqMax = new PriorityQueue<>(this.finalList.size(), Collections.reverseOrder());
 		
-		// adding ang current data price because "getLastData()" get data from the previous day
 		pqMin.add(this.curPrice);
 		pqMax.add(this.curPrice);
-
+		
 		for (OHLC element : this.finalList) {
 			pqMin.add(element.getLow());
 			pqMax.add(element.getHigh());
@@ -175,7 +184,7 @@ public class Myfxbook {
 		System.out.println(String.format("Max XMRUSD: %.5f lev/%.5f", this.lastMAX, this.curPrice - this.lastMAX));
 	}
 	
-	private JsonArray tableToJSON(Element table) {
+	private JsonArray tableToJSON(Element table, String curPrice) {
 		JsonArray finalJsonArray = new JsonArray();
 		
 		Elements tRow = table.getElementsByTag("tr");
@@ -189,6 +198,20 @@ public class Myfxbook {
 			}
 			finalJsonArray.add(jArrRow);
 		}
+		
+		JsonArray jArrCPrice = new JsonArray();
+		jArrCPrice.add(0);
+		jArrCPrice.add(0);
+		jArrCPrice.add(0); // hight
+		jArrCPrice.add(0); // low
+		
+		jArrCPrice.add(curPrice);
+		jArrCPrice.add(0);
+		jArrCPrice.add(0);
+		
+		// add to 100 place
+		finalJsonArray.add(jArrCPrice);
+		
 		return finalJsonArray;
 	}
 	
@@ -202,8 +225,8 @@ public class Myfxbook {
 	
 	// Test
 	public static void main(String[] args) {
-		Myfxbook fx55 = new Myfxbook(55);
-		fx55.init();
+		Myfxbook fx20 = new Myfxbook(20);
+		fx20.init();
 	}
 
 }

@@ -59,11 +59,11 @@ public class Myfxbook {
 		StringBuilder sb = new StringBuilder();
 		
 		// check for file last updated
-		int minute = 30;
-		int periodMinutes = minute * 60 * 5;
-		long OneMinuteMillis = (periodMinutes * 1000)  * 60;
+		int minutes = 3;
+		int seconds = minutes * 60;
+		long backupPeriodMillis = (seconds * 1000);
 		long millis = System.currentTimeMillis();
-		boolean check = (file.lastModified() + OneMinuteMillis) > millis;
+		boolean check = (file.lastModified() + backupPeriodMillis) > millis;
 
 		if (file.exists() && check) {
 			try {

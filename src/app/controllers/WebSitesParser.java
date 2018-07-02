@@ -247,7 +247,8 @@ public class WebSitesParser {
 				.timeout(timeout).validateTLSCertificates(false)
 				.get();
 		
-		Element prUSD = (Element) doc.getElementsByClass("col-xs-6 col-sm-8 col-md-4 text-left").get(0).childNode(1);
+//		Element prUSD = (Element) doc.getElementsByClass("col-xs-6 col-sm-8 col-md-4 text-left").get(0).childNode(1);
+		Element prUSD = (Element) doc.getElementById("quote_price");
 		
 		System.out.println(prUSD.ownText());
 		String priceUSD;
@@ -258,7 +259,8 @@ public class WebSitesParser {
 		}
 		System.out.println(crypto.toUpperCase() + " USD: " + priceUSD);
 		
-		Element prBTC = (Element) doc.getElementsByClass("col-xs-6 col-sm-8 col-md-4 text-left").get(0).childNode(7);
+//		Element prBTC = (Element) doc.getElementsByClass("col-xs-6 col-sm-8 col-md-4 text-left").get(0).childNode(7);
+		Element prBTC = (Element) doc.getElementsByClass("details-panel-item--price bottom-margin-1x").get(0).childNode(7);
 		
 //		System.out.println(prBTC.ownText());
 		String priceBTC = prBTC.text();

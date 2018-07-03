@@ -22,16 +22,17 @@ import com.google.gson.JsonPrimitive;
 import com.google.gson.reflect.TypeToken;
 
 public class Myfxbook {
-	public static final String STR_URL = "https://www.myfxbook.com/forex-market/currencies/EURUSD-historical-data";
-	public static final double EUR_BGN = 1.956;
-	private static final int timeout = 50000;
+	private static final String STR_URL = "https://www.myfxbook.com/forex-market/currencies/EURUSD-historical-data";
+	private static final double EUR_BGN = 1.956;
+	private static final int TIMEOUT = 50000;
+	private static final String INDEX = "BGNUSD";
 	
-	public int histPeriod;
-	public List<OHLC> finalList;
-	public double curPrice;
-	public double lastTR;
-	public double lastMIN;
-	public double lastMAX;
+	private int histPeriod;
+	private List<OHLC> finalList;
+	private double curPrice;
+	private double lastTR;
+	private double lastMIN;
+	private double lastMAX;
 
 	public Myfxbook(int histPeriod) {
 		this.histPeriod = histPeriod;
@@ -81,7 +82,7 @@ public class Myfxbook {
 				System.out.println("... Downloading New Data From myfxbook");
 				
 				Document doc = Jsoup.connect(STR_URL)
-						.timeout(timeout).validateTLSCertificates(false)
+						.timeout(TIMEOUT).validateTLSCertificates(false)
 						.get();
 				
 				Element table = doc.getElementById("symbolMarket");
@@ -180,8 +181,8 @@ public class Myfxbook {
 		System.out.println("Data info for " + (this.finalList.size()) + " day/s period.");
 		System.out.println(String.format("Average TR: %.5f", this.lastTR));
 		System.out.println(String.format("Current Price: %.5f lev", this.curPrice));
-		System.out.println(String.format("Min XMRUSD: %.5f lev/%.5f", this.lastMIN, this.curPrice - this.lastMIN));
-		System.out.println(String.format("Max XMRUSD: %.5f lev/%.5f", this.lastMAX, this.curPrice - this.lastMAX));
+		System.out.println(String.format("Min %s: %.5f lev/%.5f", INDEX, this.lastMIN, this.curPrice - this.lastMIN));
+		System.out.println(String.format("Max %s: %.5f lev/%.5f", INDEX, this.lastMAX, this.curPrice - this.lastMAX));
 	}
 	
 	private JsonArray tableToJSON(Element table, String curPrice) {

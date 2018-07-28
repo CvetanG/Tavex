@@ -20,7 +20,7 @@ import app.controllers.ExcelController;
 import app.controllers.WebSitesParser;
 import app.entities.RowEntry;
 import app.entities.Utils;
-import app.histdata.Myfxbook;
+import app.histdata.Oanda;
 
 public class RunMe {
 
@@ -120,13 +120,12 @@ public class RunMe {
 		//close the stream
 		output_file.close();
 		
-		
 		myDropbox.uploadFile(client, localFile, dropboxPath);
 		
-		Myfxbook fx20 = new Myfxbook(20);
-		fx20.init();
-		Myfxbook fx55 = new Myfxbook(55);
-		fx55.init();
+		Oanda o20 = new Oanda(20, "BGNUSD");
+		o20.init();
+		Oanda o55 = new Oanda(55, "BGNUSD");
+		o55.init();
         
         long endTime   = System.currentTimeMillis();
 		System.err.println(Utils.duration(startTime, endTime));

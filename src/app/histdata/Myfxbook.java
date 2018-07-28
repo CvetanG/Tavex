@@ -124,8 +124,6 @@ public class Myfxbook {
 //		result.setLow(Double.parseDouble(yourList.get(3)));
 //		result.setClose(Double.parseDouble(yourList.get(4)));
 		
-		result.setChangePip(yourList.get(5));
-		result.setChangeProcent(yourList.get(6));
 		return result;
 	}
 

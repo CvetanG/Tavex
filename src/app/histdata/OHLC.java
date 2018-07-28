@@ -7,9 +7,6 @@ public class OHLC {
 	double low;
 	double close;
 	
-	String changePip;
-	String changeProcent;
-	
 	public String getDate() {
 		return date;
 	}
@@ -50,25 +47,9 @@ public class OHLC {
 		this.close = close;
 	}
 
-	public String getChangePip() {
-		return changePip;
-	}
-
-	public void setChangePip(String changePip) {
-		this.changePip = changePip;
-	}
-
-	public String getChangeProcent() {
-		return changeProcent;
-	}
-
-	public void setChangeProcent(String changeProcent) {
-		this.changeProcent = changeProcent;
-	}
-
 	@Override
 	public String toString() {
-		return "OHLC: " + date + " " + open + " " +  high + " " +  low + " " +  close + " " +  changePip + " " + changeProcent;
+		return "OHLC: " + date + " " + open + " " +  high + " " +  low + " " +  close;
 	}
 	
 	

@@ -84,7 +84,7 @@ public class DropboxAuth {
 		String argAuthFileOutput = "authFile.app";
 		
 		DbxAppInfo appInfo = readApp(argAppInfoFile);
-		DbxAuthFinish authFinish = authorization (appInfo);
-		saveAuth (authFinish, appInfo, argAuthFileOutput);
+		DbxAuthFinish authFinish = authorization(appInfo);
+		saveAuth(authFinish, appInfo, argAuthFileOutput);
 	}
 }

@@ -4,15 +4,26 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.http.HttpResponse;
+import org.apache.http.client.methods.HttpGet;
+import org.apache.http.client.methods.HttpUriRequest;
+import org.apache.http.impl.client.CloseableHttpClient;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
+import com.google.gson.JsonArray;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
+
 import app.entities.CurrenciesEnum;
 import app.entities.IndexesEnum;
 import app.entities.RowEntry;
 import app.entities.Utils;
+import app.histdata.BaseMarketData;
+import app.histdata.Oanda;
+import app.histdata.OandaJsonKeys;
 
 public class WebSitesParser {
 	
@@ -162,6 +173,7 @@ public class WebSitesParser {
 
 	}
 	
+	/*
 	public RowEntry getXAUUSD() throws IOException {
 		String myUrl = "https://www.bloomberg.com/quote/XAUUSD:CUR";
 
@@ -170,7 +182,7 @@ public class WebSitesParser {
 				.get();
 		
 //		Elements div = doc.getElementsByClass("price");
-		Elements div = doc.getElementsByClass("priceText__1853e8a5");
+		Elements div = doc.getElementsByClass("value__b93f12ea");
 		
 //		System.out.println(div.get(0).ownText());
 		String result = Utils.currencyFormater(div.get(0).ownText());
@@ -190,6 +202,39 @@ public class WebSitesParser {
 		
 		return rowEntry;
 		
+	}
+	*/
+	
+	public RowEntry getXAUUSD() throws IOException {
+		
+		String finalUrl = "https://api-fxpractice.oanda.com/v3/accounts/101-004-8512520-001/pricing?instruments=XAU_USD";
+		
+		CloseableHttpClient httpClient = Oanda.getHttpClient();
+		HttpUriRequest httpGet = new HttpGet(finalUrl);
+		httpGet.setHeader(Oanda.UNIX_DATETIME_HEADER);
+		httpGet.setHeader(Oanda.createAuthHeader());
+		HttpResponse resp = httpClient.execute(httpGet);
+		String strResp = Oanda.responseToString(resp);
+		
+		JsonParser parser = new JsonParser();
+		JsonObject json = parser.parse(strResp).getAsJsonObject();
+		JsonArray data = json.getAsJsonArray(OandaJsonKeys.prices);
+		JsonObject prices = data.get(0).getAsJsonObject();
+		String result = prices.get(OandaJsonKeys.closeoutAsk).getAsString();
+		
+		RowEntry rowEntry = new RowEntry(
+				"XAUUSD:CUR",
+				IndexesEnum.XAUUSD,
+				CurrenciesEnum.USD,
+				null,
+				null,
+				null,
+				null,
+				"open",
+				result,
+				false);
+		
+		return rowEntry;
 	}
 	
 	public RowEntry getXAUBGN() throws IOException {
@@ -218,7 +263,6 @@ public class WebSitesParser {
 				false);
 		
 		return rowEntry;
-		
 	}
 	
 	public RowEntry getEthereumPrice() throws IOException {
@@ -305,9 +349,11 @@ public class WebSitesParser {
 		
 	}
 	
-	public void main(String[] args) throws IOException {
+	public static void main(String[] args) throws IOException {
 		System.out.println("Start Program");
 		long startTime = System.currentTimeMillis();
+		
+		WebSitesParser parser = new WebSitesParser();
 		
 		/*
 		myCoinsStrings.add("1 унция златен канадски кленов лист");
@@ -318,12 +364,14 @@ public class WebSitesParser {
 //		getCoinsFromTavex();
 //		getBGNUSD();
 		
-//		getXAUUSD();
+		RowEntry rowEntryXAUUSD = parser.getXAUUSD();
+		System.out.println(rowEntryXAUUSD.toString());
 		
 //		getXAUBGN();
 		
 //		getEthereumPrice();
 		
+		/*
 		RowEntry rowEntry_02 = new RowEntry(
 				"Канадски кленов лист 1 унция",
 				IndexesEnum.DEFAULT,
@@ -337,7 +385,7 @@ public class WebSitesParser {
 				false);
 		
 		System.out.println(rowEntry_02.toString());
-		
+		*/
 		long endTime   = System.currentTimeMillis();
 		Utils.duration(startTime, endTime);
 		

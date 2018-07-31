@@ -30,7 +30,7 @@ import com.google.gson.JsonParser;
 public class Oanda extends BaseMarketData{
 	
 	private static final double EUR_BGN = 1.956;
-	private static final BasicHeader UNIX_DATETIME_HEADER = new BasicHeader("X-Accept-Datetime-Format", "UNIX");
+	public static final BasicHeader UNIX_DATETIME_HEADER = new BasicHeader("X-Accept-Datetime-Format", "UNIX");
 	
 	private static final String instrument = "EUR_USD";
 
@@ -143,7 +143,7 @@ public class Oanda extends BaseMarketData{
 		return result;
 	}
 	
-	CloseableHttpClient getHttpClient() {
+	public static CloseableHttpClient getHttpClient() {
 		return HttpClientBuilder.create().build();
 	}
 	

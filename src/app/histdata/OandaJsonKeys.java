@@ -12,5 +12,7 @@ public class OandaJsonKeys {
 	public static final String high = "h";
 	public static final String low = "l";
 	public static final String close = "c";
+	public static final String prices = "prices";
+	public static final String closeoutAsk = "closeoutAsk";
 
 }

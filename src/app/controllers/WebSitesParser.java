@@ -169,7 +169,8 @@ public class WebSitesParser {
 				.timeout(timeout).validateTLSCertificates(false)
 				.get();
 		
-		Elements div = doc.getElementsByClass("price");
+//		Elements div = doc.getElementsByClass("price");
+		Elements div = doc.getElementsByClass("priceText__1853e8a5");
 		
 //		System.out.println(div.get(0).ownText());
 		String result = Utils.currencyFormater(div.get(0).ownText());

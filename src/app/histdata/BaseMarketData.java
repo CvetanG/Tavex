@@ -76,14 +76,21 @@ public abstract class BaseMarketData {
 		this.lastMAX = pqMax.peek();;
 
 	}
-
+	
+	private double calcPercent(double price, double curPrice) {
+		double pers = (price * 100.0f) / curPrice;
+		return -(100.0 - pers);
+	}
+	
 	public void print() {
+		double b = 1.7021;
 		System.out.println("***** TRADING INFO *****");
 		System.out.println("Data info for " + (this.finalList.size()) + " day/s period.");
 		System.out.println(String.format("Average TR: %.5f", this.lastTR));
 		System.out.println(String.format("Current Price: %.5f lev", this.curPrice));
-		System.out.println(String.format("Min %s: %.5f lev/%.5f", index, this.lastMIN, this.curPrice - this.lastMIN));
-		System.out.println(String.format("Max %s: %.5f lev/%.5f", index, this.lastMAX, this.curPrice - this.lastMAX));
+		System.out.println(String.format("Min %s: %.5f lev/%5.2f%s", index, this.lastMIN, calcPercent(this.lastMIN, this.curPrice), "%"));
+		System.out.println(String.format("Max %s: %.5f lev/%5.2f%s", index, this.lastMAX, calcPercent(this.lastMAX, this.curPrice), "%"));
+		System.out.println(String.format("Bought  %.5f lev/%5.2f%s", b , calcPercent(this.curPrice, b), "%"));
 	}
 	
 	public List<OHLC> getFinalList() {

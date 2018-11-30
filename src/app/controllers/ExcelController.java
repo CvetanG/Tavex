@@ -277,7 +277,7 @@ public class ExcelController {
 		
 	}
 	
-	public static void main(String[] args) throws IOException {
+	public static void main(String[] args) throws Exception {
 		
 		System.out.println("Start Program");
 		long startTime = System.currentTimeMillis();

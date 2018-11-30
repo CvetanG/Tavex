@@ -1,8 +1,14 @@
 package app.controllers;
 
+import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
+
+import javax.net.ssl.HttpsURLConnection;
 
 import org.apache.http.HttpResponse;
 import org.apache.http.client.methods.HttpGet;
@@ -43,7 +49,6 @@ public class WebSitesParser {
 	
 	String divProdClass = "product__content";
 	String divPriceClass = "product__price";
-//	static List<String> myCoinsStrings = new ArrayList<>();
 	
 	String divGoldClass = "chart__value";
 	
@@ -57,11 +62,28 @@ public class WebSitesParser {
 
 		List<RowEntry> myCoinRowEntries = new ArrayList<RowEntry>();
 		
-		String myUrl = "http://www.tavex.bg/zlato";
+		String httpsURL = "https://www.tavex.bg/zlato";
 		
-		Document doc = Jsoup.connect(myUrl)
-				.timeout(timeout).validateTLSCertificates(false)
-				.get();
+	        URL myUrl = new URL(httpsURL);
+	        HttpsURLConnection conn = (HttpsURLConnection)myUrl.openConnection();
+	        
+	        
+	        InputStream is = conn.getInputStream();
+	        InputStreamReader isr = new InputStreamReader(is);
+	        BufferedReader br = new BufferedReader(isr);
+
+	        String inputLine;
+
+	        while ((inputLine = br.readLine()) != null) {
+	            System.out.println(inputLine);
+	        }
+
+	        br.close();
+	        Document doc = new Document(inputLine);
+	        
+//		Document doc = Jsoup.connect(myUrl)
+//				.timeout(timeout).validateTLSCertificates(false)
+//				.get();
 		
 		Elements paginations = doc.getElementsByClass("pagination__item");
 		
@@ -121,7 +143,7 @@ public class WebSitesParser {
 	
 	// Not using this method
 	public void getGoldFromTavex() throws IOException {
-		String myUrl = "http://www.tavex.bg/zlato/#charts-modal";
+		String myUrl = "https://www.tavex.bg/zlato/#charts-modal";
 
 		Document tavex = Jsoup.connect(myUrl)
 				.timeout(timeout).validateTLSCertificates(false)
@@ -355,13 +377,13 @@ public class WebSitesParser {
 		
 		WebSitesParser parser = new WebSitesParser();
 		
-		/*
+		List<String> myCoinsStrings = new ArrayList<>();
 		myCoinsStrings.add("1 унция златен канадски кленов лист");
 //		myCoinsStrings.add("1 унция златна австрийска филхармония");
 		myCoinsStrings.add("5 грама златно кюлче PAMP Фортуна");
 		myCoinsStrings.add("1 унция златна китайска панда от 2009");
-		*/
-//		getCoinsFromTavex();
+
+		parser.getCoinsFromTavex(myCoinsStrings);
 //		getBGNUSD();
 		
 		RowEntry rowEntryXAUUSD = parser.getXAUUSD();

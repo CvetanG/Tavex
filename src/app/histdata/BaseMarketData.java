@@ -7,18 +7,19 @@ import java.util.PriorityQueue;
 
 public abstract class BaseMarketData {
 	
-	public int histPeriod;
-	public List<OHLC> finalList;
-	public double curPrice;
-	public double lastTR;
-	public double lastMIN;
-	public double lastMAX;
+	public int period;
+	public List<OHLC> periodList;
+	public double lastPrice;
+	public double lastOpen;
+	public double periodTR;
+	public double periodMIN;
+	public double periodMAX;
 	
-	public String index;
+	public String pair;
 	
-	public BaseMarketData(int histPeriod, String index) {
-		this.histPeriod = histPeriod;
-		this.index = index;
+	public BaseMarketData(int period, String pair) {
+		this.period = period;
+		this.pair = pair;
 	}
 
 	public void init(){
@@ -40,10 +41,10 @@ public abstract class BaseMarketData {
 		List<Double> listTRMax = new ArrayList<>();
 		PriorityQueue<Double> pq;
 		
-		for (int i = 1; i < this.finalList.size(); i++) {
-			TR1 = Math.abs(this.finalList.get(i).getHigh() - this.finalList.get(i).getLow());
-			TR2 = Math.abs(this.finalList.get(i - 1).getClose() - this.finalList.get(i).getHigh());
-			TR3 = Math.abs(this.finalList.get(i - 1).getClose() - this.finalList.get(i).getLow());
+		for (int i = 1; i < this.periodList.size(); i++) {
+			TR1 = Math.abs(this.periodList.get(i).getHigh() - this.periodList.get(i).getLow());
+			TR2 = Math.abs(this.periodList.get(i - 1).getClose() - this.periodList.get(i).getHigh());
+			TR3 = Math.abs(this.periodList.get(i - 1).getClose() - this.periodList.get(i).getLow());
 
 			pq = new PriorityQueue<>(3, Collections.reverseOrder());
 			pq.add(TR1);
@@ -56,49 +57,53 @@ public abstract class BaseMarketData {
 		for (Double TRMax: listTRMax) {
 			sum += TRMax;
 		}
-		this.lastTR =  sum.doubleValue() / listTRMax.size();
+		this.periodTR =  sum.doubleValue() / listTRMax.size();
 
 	}
 
 	public void calculateMinMax() {
-		PriorityQueue<Double> pqMin = new PriorityQueue<>(this.finalList.size());
-		PriorityQueue<Double> pqMax = new PriorityQueue<>(this.finalList.size(), Collections.reverseOrder());
+		PriorityQueue<Double> pqMin = new PriorityQueue<>(this.periodList.size());
+		PriorityQueue<Double> pqMax = new PriorityQueue<>(this.periodList.size(), Collections.reverseOrder());
 		
-		pqMin.add(this.curPrice);
-		pqMax.add(this.curPrice);
+		pqMin.add(this.lastPrice);
+		pqMax.add(this.lastPrice);
 		
-		for (OHLC element : this.finalList) {
+		for (OHLC element : this.periodList) {
 			pqMin.add(element.getLow());
 			pqMax.add(element.getHigh());
 		}
 
-		this.lastMIN = pqMin.peek();
-		this.lastMAX = pqMax.peek();;
+		this.periodMIN = pqMin.peek();
+		this.periodMAX = pqMax.peek();;
 
 	}
 	
-	private double calcPercent(double price, double curPrice) {
-		double pers = (price * 100.0f) / curPrice;
-		return -(100.0 - pers);
+	private String calcPercent(double a, double b) {
+		double pers = (a * 100.0f) / b;
+		if (pers > 100.0) {
+			return String.format("(+%.2f%s)", -(100.0 - pers), "%");
+		} else {
+			return String.format("(%.2f%s)", -(100.0 - pers), "%");
+		}
 	}
 	
 	public void print() {
 		double b = 1.7021;
 		System.out.println("***** TRADING INFO *****");
-		System.out.println("Data info for " + (this.finalList.size()) + " day/s period.");
-		System.out.println(String.format("Average TR: %.5f", this.lastTR));
-		System.out.println(String.format("Current Price: %.5f lev", this.curPrice));
-		System.out.println(String.format("Min %s: %.5f lev/%5.2f%s", index, this.lastMIN, calcPercent(this.lastMIN, this.curPrice), "%"));
-		System.out.println(String.format("Max %s: %.5f lev/%5.2f%s", index, this.lastMAX, calcPercent(this.lastMAX, this.curPrice), "%"));
-		System.out.println(String.format("Bought  %.5f lev/%5.2f%s", b , calcPercent(this.curPrice, b), "%"));
+		System.out.println("Data info for " + (this.periodList.size()) + " day/s period.");
+		System.out.println(String.format("Average TR: %.5f", this.periodTR));
+		System.out.println(String.format("Curr Price: %.5f lev %s", this.lastPrice, calcPercent(this.lastOpen, this.lastPrice)));
+		System.out.println(String.format("Min %s: %.5f lev %s", pair, this.periodMIN, calcPercent(this.periodMIN, this.lastPrice)));
+		System.out.println(String.format("Max %s: %.5f lev %s", pair, this.periodMAX, calcPercent(this.periodMAX, this.lastPrice)));
+		System.out.println(String.format("    Bought: %.5f lev %s", b , calcPercent(this.lastPrice, b)));
 	}
 	
 	public List<OHLC> getFinalList() {
-		return finalList;
+		return periodList;
 	}
 
 	public void setFinalList(List<OHLC> finalList) {
-		this.finalList = finalList;
+		this.periodList = finalList;
 	}
 	
 }

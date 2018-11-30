@@ -43,13 +43,13 @@ public class Oanda extends BaseMarketData{
 		return String.format(
 				"%s/%s/candles?price=M&granularity=D&to=%s&count=%d",
 				"https://api-fxpractice.oanda.com/v3/instruments", instrument, 
-				dateTime.toString(), histPeriod);
+				dateTime.toString(), period);
 	}
 	
 	@Override
 	public void getLastData() {
 		File file = new File(instrument + "_dataList.json");
-		this.finalList = new ArrayList<OHLC>();
+		this.periodList = new ArrayList<OHLC>();
 
 		BufferedReader rd;
 		JsonArray data =  null;
@@ -86,7 +86,7 @@ public class Oanda extends BaseMarketData{
 			}
 		}
 		
-		if (data.size() < histPeriod) {
+		if (data.size() < period) {
 			try {
 				data = downloadData(file, parser);
 			} catch (IOException e) {
@@ -94,9 +94,10 @@ public class Oanda extends BaseMarketData{
 			}
 		}
 		for (int i = 0; i < data.size(); i++) {
-			this.finalList.add(jsonElementToOHLC(gson, data.get(i)));
+			this.periodList.add(jsonElementToOHLC(gson, data.get(i)));
 		}
-		this.curPrice =  this.finalList.get(histPeriod - 1).getClose();
+		this.lastPrice =  this.periodList.get(period - 1).getClose();
+		this.lastOpen =  this.periodList.get(period - 1).getOpen();
 
 	}
 

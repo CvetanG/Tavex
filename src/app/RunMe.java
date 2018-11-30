@@ -24,7 +24,7 @@ import app.histdata.Oanda;
 
 public class RunMe {
 
-	public static void main(String[] args) throws IOException, DbxApiException, DbxException {
+	public static void main(String[] args) throws Exception, DbxApiException, DbxException {
 		
 		System.out.println("Start Program");
 		long startTime = System.currentTimeMillis();
@@ -75,7 +75,9 @@ public class RunMe {
 		List<RowEntry> myEntries = new ArrayList<RowEntry>();
 		WebSitesParser myParser = new WebSitesParser();
 		
-		myEntries = myParser.getCoinsFromTavex(myCoinsStrings);
+//		List<RowEntry> myGoldCoins = myParser.getCoinsFromTavex(myCoinsStrings);
+//		myEntries.addAll(myGoldCoins);
+		
 		RowEntry rowEtry_01 = myParser.getBGNUSD();
 		myEntries.add(rowEtry_01);
 		

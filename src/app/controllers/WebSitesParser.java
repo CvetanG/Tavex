@@ -27,14 +27,17 @@ import app.entities.CurrenciesEnum;
 import app.entities.IndexesEnum;
 import app.entities.RowEntry;
 import app.entities.Utils;
-import app.histdata.BaseMarketData;
 import app.histdata.Oanda;
 import app.histdata.OandaJsonKeys;
 
 public class WebSitesParser {
 	
-	private static final int timeout = 50000;
+	private static final int TIMEOUT = 50000;
 	private static WebSitesParser instance;
+	
+	private static String divProdClass = "product__content";
+	private static String divPriceClass = "product__price";
+	private static String divGoldClass = "chart__value";
     
 	public WebSitesParser(){
 		
@@ -47,10 +50,6 @@ public class WebSitesParser {
         return instance;
     }
 	
-	String divProdClass = "product__content";
-	String divPriceClass = "product__price";
-	
-	String divGoldClass = "chart__value";
 	
 	// Using this in BGNUSD
 //	public static String replaceCurr(String curr) {
@@ -58,7 +57,7 @@ public class WebSitesParser {
 //		return curr;
 //	}
 	
-	public List<RowEntry> getCoinsFromTavex(List<String> myCoinsStrings) throws IOException {
+	public static List<RowEntry> getCoinsFromTavex(List<String> myCoinsStrings) throws IOException {
 
 		List<RowEntry> myCoinRowEntries = new ArrayList<RowEntry>();
 		
@@ -94,7 +93,7 @@ public class WebSitesParser {
 		
 		for (int j = 1; j < i; j++) {
 			Document tavex = Jsoup.connect(myUrl + "/page/" + j + "/#s")
-					.timeout(timeout).validateTLSCertificates(false)
+					.timeout(TIMEOUT).validateTLSCertificates(false)
 					.get();
 		
 			Elements allElements = tavex.getElementsByClass(divProdClass);
@@ -146,7 +145,7 @@ public class WebSitesParser {
 		String myUrl = "https://www.tavex.bg/zlato/#charts-modal";
 
 		Document tavex = Jsoup.connect(myUrl)
-				.timeout(timeout).validateTLSCertificates(false)
+				.timeout(TIMEOUT).validateTLSCertificates(false)
 				.get();
 
 		Elements allElements = tavex.getElementsByClass(divGoldClass);
@@ -157,12 +156,12 @@ public class WebSitesParser {
 
 	}
 	
-	public RowEntry getBGNUSD() throws IOException {
+	public static RowEntry getBGNUSD() throws IOException {
 //		String myUrl = "https://ebb.ubb.bg/Log.aspx";
 		String myUrl = "https://ebb.ubb.bg/ebank/Log.aspx";
 
 		Document doc = Jsoup.connect(myUrl)
-				.timeout(timeout).validateTLSCertificates(false)
+				.timeout(TIMEOUT).validateTLSCertificates(false)
 				.get();
 		
 		Element div = doc.getElementById("currency1").getElementsByTag("tr").get(5);
@@ -227,7 +226,7 @@ public class WebSitesParser {
 	}
 	*/
 	
-	public RowEntry getXAUUSD() throws IOException {
+	public static RowEntry getXAUUSD() throws IOException {
 		
 		String finalUrl = "https://api-fxpractice.oanda.com/v3/accounts/101-004-8512520-001/pricing?instruments=XAU_USD";
 		
@@ -259,11 +258,11 @@ public class WebSitesParser {
 		return rowEntry;
 	}
 	
-	public RowEntry getXAUBGN() throws IOException {
+	public static RowEntry getXAUBGN() throws IOException {
 		String myUrl = "http://www.bnb.bg/Statistics/StExternalSector/StExchangeRates/StERForeignCurrencies/index.htm";
 
 		Document doc = Jsoup.connect(myUrl)
-				.timeout(timeout).validateTLSCertificates(false)
+				.timeout(TIMEOUT).validateTLSCertificates(false)
 				.get();
 		
 		Element div = (Element) doc.getElementsByClass("table").get(0).childNode(4).childNode(63).childNode(7);
@@ -287,37 +286,38 @@ public class WebSitesParser {
 		return rowEntry;
 	}
 	
-	public RowEntry getEthereumPrice() throws IOException {
+	public static RowEntry getEthereumPrice() throws IOException {
 		String crypto = "ethereum";
-		return getCryptoCurrency(crypto);
+		return WebSitesParser.getCryptoCurrency(crypto);
 	}
 	
-	public RowEntry getBitcoinPrice() throws IOException {
+	public static RowEntry getBitcoinPrice() throws IOException {
 		String crypto = "bitcoin";
-		return getCryptoCurrency(crypto);
+		return WebSitesParser.getCryptoCurrency(crypto);
 	}
 	
-	public RowEntry getMoneroPrice() throws IOException {
+	public static RowEntry getMoneroPrice() throws IOException {
 		String crypto = "monero";
-		return getCryptoCurrency(crypto);
+		return WebSitesParser.getCryptoCurrency(crypto);
 	}
 	
-	public RowEntry getDogePrice() throws IOException {
+	public static RowEntry getDogePrice() throws IOException {
 		String crypto = "dogecoin";
-		return getCryptoCurrency(crypto);
+		return WebSitesParser.getCryptoCurrency(crypto);
 	}
 	
-	public RowEntry getCryptoCurrency(String crypto) throws IOException {
+	private static RowEntry getCryptoCurrency(String crypto) throws IOException {
 		String myUrl = "https://coinmarketcap.com/currencies/" + crypto + "/";
 		
 		Document doc = Jsoup.connect(myUrl)
-				.timeout(timeout).validateTLSCertificates(false)
+				.timeout(TIMEOUT).validateTLSCertificates(false)
 				.get();
 		
 //		Element prUSD = (Element) doc.getElementsByClass("col-xs-6 col-sm-8 col-md-4 text-left").get(0).childNode(1);
-		Element prUSD = (Element) doc.getElementById("quote_price");
+//		Element prUSD = (Element) doc.getElementById("quote_price");
+		Element prUSD = (Element) doc.getElementsByClass("cmc-details-panel-price__price").get(0);
 		
-		System.out.println(prUSD.ownText());
+//		System.out.println(prUSD.ownText());
 		String priceUSD;
 		if ("dogecoin".equals(crypto)) {
 			priceUSD = Utils.clearFormatCurr1000(prUSD.text());
@@ -327,7 +327,7 @@ public class WebSitesParser {
 		System.out.println(crypto.toUpperCase() + " USD: " + priceUSD);
 		
 //		Element prBTC = (Element) doc.getElementsByClass("col-xs-6 col-sm-8 col-md-4 text-left").get(0).childNode(7);
-		Element prBTC = (Element) doc.getElementsByClass("details-panel-item--price bottom-margin-1x").get(0).childNode(7);
+		Element prBTC = (Element) doc.getElementsByClass("cmc-details-panel-price__crypto-price").get(0);
 		
 //		System.out.println(prBTC.ownText());
 		String priceBTC = prBTC.text();
@@ -375,7 +375,6 @@ public class WebSitesParser {
 		System.out.println("Start Program");
 		long startTime = System.currentTimeMillis();
 		
-		WebSitesParser parser = new WebSitesParser();
 		
 		List<String> myCoinsStrings = new ArrayList<>();
 		myCoinsStrings.add("1 унция златен канадски кленов лист");
@@ -383,15 +382,16 @@ public class WebSitesParser {
 		myCoinsStrings.add("5 грама златно кюлче PAMP Фортуна");
 		myCoinsStrings.add("1 унция златна китайска панда от 2009");
 
-		parser.getCoinsFromTavex(myCoinsStrings);
+//		WebSitesParser.getCoinsFromTavex(myCoinsStrings);
 //		getBGNUSD();
 		
-		RowEntry rowEntryXAUUSD = parser.getXAUUSD();
-		System.out.println(rowEntryXAUUSD.toString());
+//		RowEntry rowEntryXAUUSD = parser.getXAUUSD();
+//		System.out.println(rowEntryXAUUSD.toString());
 		
 //		getXAUBGN();
 		
 //		getEthereumPrice();
+		getDogePrice();
 		
 		/*
 		RowEntry rowEntry_02 = new RowEntry(

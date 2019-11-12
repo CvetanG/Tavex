@@ -3,7 +3,6 @@ package app;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -73,30 +72,29 @@ public class RunMe {
 		Workbook wb = new XSSFWorkbook(fsIP);
 		
 		List<RowEntry> myEntries = new ArrayList<RowEntry>();
-		WebSitesParser myParser = new WebSitesParser();
 		
 //		List<RowEntry> myGoldCoins = myParser.getCoinsFromTavex(myCoinsStrings);
 //		myEntries.addAll(myGoldCoins);
 		
-		RowEntry rowEtry_01 = myParser.getBGNUSD();
+		RowEntry rowEtry_01 = WebSitesParser.getBGNUSD();
 		myEntries.add(rowEtry_01);
 		
-		RowEntry rowEtry_02 = myParser.getXAUBGN();
+		RowEntry rowEtry_02 = WebSitesParser.getXAUBGN();
 		myEntries.add(rowEtry_02);
 		
-		RowEntry rowEtry_03 = myParser.getXAUUSD();
+		RowEntry rowEtry_03 = WebSitesParser.getXAUUSD();
 		myEntries.add(rowEtry_03);
 		
-		RowEntry rowEtry_04 = myParser.getEthereumPrice();
+		RowEntry rowEtry_04 = WebSitesParser.getEthereumPrice();
 		myEntries.add(rowEtry_04);
 		
-		RowEntry rowEtry_05 = myParser.getMoneroPrice();
+		RowEntry rowEtry_05 = WebSitesParser.getMoneroPrice();
 		myEntries.add(rowEtry_05);
 		
-		RowEntry rowEtry_06 = myParser.getDogePrice();
+		RowEntry rowEtry_06 = WebSitesParser.getDogePrice();
 		myEntries.add(rowEtry_06);
 		
-		RowEntry rowEtry_07 = myParser.getBitcoinPrice();
+		RowEntry rowEtry_07 = WebSitesParser.getBitcoinPrice();
 		myEntries.add(rowEtry_07);
 		
 		System.out.println();

@@ -25,13 +25,14 @@ public class Utils {
 	}
 	
 	public static String clearFormatCurr(String curr) {
-		curr = curr.substring(0, curr.length()-4);
+//		curr = curr.substring(0, curr.length()-4);
 		String result = currencyFormater(curr);
 		return result;
 	}
 	
 	public static String clearFormatCurr1000(String curr) {
-		curr = curr.substring(0, curr.length()-4);
+//		curr = curr.substring(0, curr.length()-4);
+		curr = curr.replace("$", "");
 		curr = String.valueOf(Double.parseDouble(curr) * 1000);
 		String result = currencyFormater(curr);
 		return result;
